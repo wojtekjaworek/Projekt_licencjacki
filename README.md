@@ -1,10 +1,10 @@
 # Projekt Licencjacki
 
 ## Autorzy
-... autorzy
+Wojciech Jaworek, Adrian Stolarek
 
 ## Opis projektu
-... opis
+Integracja pipeline'ów oraz warstw opartych na TDA w konwolucyjnej sieci neuronowej.
 
 ## Wymagania
 ... wymagania, python, biblioteki, itp.
