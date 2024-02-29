@@ -1,1 +1,4 @@
 # tutaj rozszerzenia i foldery ktore nie maja byc dodawane na repo
+
+__pycache__/
+.ipynb_checkpoints/
