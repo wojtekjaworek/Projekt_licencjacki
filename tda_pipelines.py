@@ -17,7 +17,7 @@ import numpy as np
 def TDA_PI34_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.5, bins=28, sig=0.15):
     """
     Generates persistance images of size 28x28, with 34 (default, if parameters are provided this might be different) channels.
-    
+
     Function creates and returns pipeline object from sklean.pipeline module.
     """
     if dir_list:
