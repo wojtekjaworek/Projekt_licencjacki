@@ -162,3 +162,13 @@ def VECTOR_STITCHING_PI_Pipeline(dir_list=None, cen_list=None, binarizer_thresho
     return final_pipeline, tda_union
 
 
+
+
+
+def display_pipeline(pipeline):
+    """
+    Function to display the pipeline object.
+    """
+    set_config(display='diagram')
+    print(pipeline)
+
