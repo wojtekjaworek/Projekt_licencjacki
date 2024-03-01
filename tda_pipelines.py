@@ -99,9 +99,15 @@ class CombineTDAWithRawImages(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        tda_features = self.tda_pipeline.transform(X).reshape(-1, 34, 28, 28)
+        tda_features = self.tda_pipeline.fit_transform(X).reshape(-1, 34, 28, 28) # transform method changed to fit_transform in order to initialize binarizer automatically
+        
+        # tda_features shape is: (nr_of_samples, persistance images: 34, resolution resolution: 28, 28)
+        #TODO: here is the place to normalize tda_freatures to [0,1] scale
 
         raw_images = self.raw_image_pipeline.transform(X).reshape(-1, 28, 28)
+        
+        #TODO: here to rescale raw_images to [0,1] scale - || -
+
 
         raw_images_expanded = np.expand_dims(raw_images, axis=1).repeat(34, axis=1)
 
@@ -111,9 +117,9 @@ class CombineTDAWithRawImages(BaseEstimator, TransformerMixin):
     
 
 
-def VECTOR_STITCHIGN_PI_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.5, bins=28, sig=0.15):
+def VECTOR_STITCHING_PI_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.5, bins=28, sig=0.15):
     # TODO: fix images normalization: before making one picture both should be normalized to [0,1] scale, to avoid vanishing features
-    # TODO: fix problem with binarizer initialization
+    # TODO: fix problem with binarizer initialization - probably solved by changing transform method to fit_transform in CombineTDAWithRawImages class
 
     """
     Returns pipeline that extracts topological features in form of persistence images and combines them with raw images.
@@ -159,15 +165,10 @@ def VECTOR_STITCHIGN_PI_Pipeline(dir_list=None, cen_list=None, binarizer_thresho
 
 
 
-
-
 def display_pipeline(pipeline):
     """
     Function to display the pipeline object.
     """
     set_config(display='diagram')
     print(pipeline)
-
-
-
 
