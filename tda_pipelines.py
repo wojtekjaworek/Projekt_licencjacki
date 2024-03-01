@@ -19,7 +19,6 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
-
 def TDA_PI34_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.5, bins=28, sig=0.15):
     """
     Generates persistance images of size 28x28, with 34 (default, if parameters are provided this might be different) channels.
@@ -61,10 +60,6 @@ def TDA_PI34_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.5, bin
 
 
     return tda_union
-
-
-
-
 
 
 class ImageScalerAndFlattener(BaseEstimator, TransformerMixin):
@@ -143,8 +138,6 @@ def VECTOR_STITCHING_PI_Pipeline(dir_list=None, cen_list=None, binarizer_thresho
         for filtration in filtration_list
     ]
 
-
-
     # feature_union 
     feature_union = make_union(
         PersistenceImage(sigma=.3, n_bins=28, n_jobs=-1) # or heat kernel, or possibly any other (but rational and well-fitting to model) vector representation of the diagram
@@ -162,9 +155,6 @@ def VECTOR_STITCHING_PI_Pipeline(dir_list=None, cen_list=None, binarizer_thresho
     return final_pipeline, tda_union
 
 
-
-
-
 def display_pipeline(pipeline):
     """
     Function to display the pipeline object.
@@ -172,3 +162,8 @@ def display_pipeline(pipeline):
     set_config(display='diagram')
     print(pipeline)
 
+def transform_data(X_train, X_test_noisy_random, X_test):
+    X_train_expanded = np.expand_dims(X_train, -1)
+    X_test_noisy_random_expanded = np.expand_dims(X_test_noisy_random, -1)
+    X_test_expanded = np.expand_dims(X_test, -1)
+    return X_train_expanded, X_test_noisy_random_expanded, X_test_expanded
