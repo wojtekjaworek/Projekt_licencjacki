@@ -11,6 +11,7 @@ from sklearn.pipeline import make_pipeline, make_union, FeatureUnion, Pipeline
 from gtda.diagrams import PersistenceEntropy, Scaler, PersistenceImage, HeatKernel, Amplitude, BettiCurve, PersistenceLandscape, Silhouette
 
 from gtda.images import HeightFiltration, Binarizer, RadialFiltration
+from gtda.images import DensityFiltration, DilationFiltration, ErosionFiltration, SignedDistanceFiltration
 from gtda.homology import CubicalPersistence
 import numpy as np
 
@@ -35,7 +36,8 @@ def TDA_PI34_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.5, bin
     # Creating a list of all filtration transformer
     filtration_list = (
         [ HeightFiltration(direction=np.array(direction), n_jobs=-1) for direction in direction_list ] +
-        [ RadialFiltration(center=np.array(center), n_jobs=-1) for center in center_list]
+        [ RadialFiltration(center=np.array(center), n_jobs=-1) for center in center_list] +
+        [ DensityFiltration(n_jobs=-1), DilationFiltration(n_jobs=-1), ErosionFiltration(n_jobs=-1), SignedDistanceFiltration(n_jobs=-1) ]
     )
 
     # Creating the diagram generation pipeline 
@@ -94,7 +96,7 @@ class CombineTDAWithRawImages(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        tda_features = self.tda_pipeline.fit_transform(X).reshape(-1, 34, 28, 28) # transform method changed to fit_transform in order to initialize binarizer automatically
+        tda_features = self.tda_pipeline.fit_transform(X).reshape(-1, 42, 28, 28) # transform method changed to fit_transform in order to initialize binarizer automatically
         
         # tda_features shape is: (nr_of_samples, persistance images: 34, resolution resolution: 28, 28)
         #TODO: here is the place to normalize tda_freatures to [0,1] scale
@@ -103,8 +105,7 @@ class CombineTDAWithRawImages(BaseEstimator, TransformerMixin):
         
         #TODO: here to rescale raw_images to [0,1] scale - || -
 
-
-        raw_images_expanded = np.expand_dims(raw_images, axis=1).repeat(34, axis=1)
+        raw_images_expanded = np.expand_dims(raw_images, axis=1).repeat(42, axis=1)
 
         combined_features = np.concatenate((tda_features, raw_images_expanded), axis=3)  
 
@@ -129,7 +130,8 @@ def VECTOR_STITCHING_PI_Pipeline(dir_list=None, cen_list=None, binarizer_thresho
     # Creating a list of all filtration transformer
     filtration_list = (
         [ HeightFiltration(direction=np.array(direction), n_jobs=-1) for direction in direction_list ] +
-        [ RadialFiltration(center=np.array(center), n_jobs=-1) for center in center_list]
+        [ RadialFiltration(center=np.array(center), n_jobs=-1) for center in center_list] +
+        [DensityFiltration(n_jobs=-1), DilationFiltration(n_jobs=-1), ErosionFiltration(n_jobs=-1), SignedDistanceFiltration(n_jobs=-1)]
     )
 
     # Creating the diagram generation pipeline 

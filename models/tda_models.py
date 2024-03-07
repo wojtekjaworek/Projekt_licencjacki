@@ -19,7 +19,7 @@ class TDA_PI34_Model():
 
     
     def init_network(self): # create model for TDA imput data in the form of persistance images generated from 17 differrent filtration x 2 homology dimensions = 34 channels
-        self.model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 34)))
+        self.model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 42)))
 
         self.model.add(layers.MaxPooling2D((2, 2)))
         self.model.add(layers.Conv2D(64, (3, 3), activation='relu'))
@@ -57,7 +57,7 @@ class VECTOR_STITCHING_PI_Model():
 
     
     def init_network(self): # create model for TDA imput data in the form of persistance images generated from 17 differrent filtration x 2 homology dimensions = 34 channels
-        self.model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(56, 28, 34)))
+        self.model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(56, 28, 42)))
 
         self.model.add(layers.MaxPooling2D((2, 2)))
         self.model.add(layers.Conv2D(64, (3, 3), activation='relu'))
