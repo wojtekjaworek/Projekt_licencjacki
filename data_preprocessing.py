@@ -17,12 +17,7 @@ vector_stitching_pipeline_34, tda_union_34 = VECTOR_STITCHING_PI_Pipeline_34()
 vector_stitching_pipeline_42, tda_union_42 = VECTOR_STITCHING_PI_Pipeline_42()
 
 
-def process(data = (None,None), training_size=1, testing_size=1, dist_ratio=10):
-
-
-    if training_size > 2000 or testing_size > 2000:
-        print("Training and testing sizes should be less than 2000")
-        return None
+def process(data = (None,None), training_indices=(1,1), testing_indices=(1,1), dist_ratio=10):
     """
     Full data processing for validation experiment. Works ONLY for 28x28 one layer images. (MNIST alike)
     Returns:
@@ -31,11 +26,19 @@ def process(data = (None,None), training_size=1, testing_size=1, dist_ratio=10):
 
     (X, y) = data
 
-    train_size, test_size = training_size, testing_size # Reshape to (n_samples, n_pixels_x, n_pixels_y) 
+    train_range = range(training_indices[0], training_indices[1])
+    test_range = range(testing_indices[0], testing_indices[1])
+
+    # train_size, test_size = training_size, testing_size # Reshape to (n_samples, n_pixels_x, n_pixels_y) 
     X = X.reshape((-1, 28, 28)) # important: works only for 28x28 images
 
     # TODO: split datasets according to some crossvalidation hyperparameters
-    X_train, X_test, y_train, y_test = train_test_split( X, y, train_size=train_size, test_size=test_size, stratify=y, random_state=666 ) 
+    # X_train, X_test, y_train, y_test = train_test_split( X, y, train_size=train_size, test_size=test_size, stratify=y, random_state=666 ) 
+
+    X_train = X[train_range]
+    X_test = X[test_range]
+    y_train = y[train_range]
+    y_test = y[test_range]
 
 
     # mnist comes with string labels, we need to convert them to int
