@@ -17,10 +17,33 @@ vector_stitching_pipeline_34, tda_union_34 = VECTOR_STITCHING_PI_Pipeline_34()
 vector_stitching_pipeline_42, tda_union_42 = VECTOR_STITCHING_PI_Pipeline_42()
 
 
-def process(data = (None,None), training_indices=(1,1), testing_indices=(1,1), dist_ratio=10):
+def process_mnist_alike(data = (None,None), training_indices=(1,1), testing_indices=(1,1), dist_ratio=10):
     """
-    Full data processing for validation experiment. Works ONLY for 28x28 one layer images. (MNIST alike)
-    Returns:
+    Full data processing for validation experiment. Works ONLY for 28x28 pixels and one layer images . (MNIST alike)
+    
+    Returns dict with keys:
+
+        "X_tr": X_tr, # 90% clean and 10% noisy normal data
+        "y_tr": y_tr, # 90% clean and 10% noisy normal data labels
+        "X_tr_tda_34": X_tr_tda_34, # 90% clean and 10% noisy tda data
+        "y_tr_tda_34": y_tr_tda_34, # 90% clean and 10% noisy tda data labels 
+        "X_tr_vector_stitching_34": X_tr_vector_stitching_34, # 90% clean and 10% noisy vector stitching data
+        "y_tr_vector_stitching_34": y_tr_vector_stitching_34, # 90% clean and 10% noisy vector stitching data labels
+        "X_train": X_train_expanded,
+        "y_train": y_train,
+        "X_train_noisy_random": X_train_noisy_random_expanded,
+        "X_train_clean_tda_good_34": X_train_clean_tda_good_34,    
+        "X_train_noisy_tda_good_34": X_train_noisy_tda_good_34,
+        "X_train_clean_vector_stitching_34": X_train_clean_vector_stitching_34,
+        "X_train_noisy_vector_stitching_34": X_train_noisy_vector_stitching_34,
+        "X_test": X_test_expanded, 
+        "y_test": y_test,
+        "X_test_noisy_random": X_test_noisy_random_expanded,
+        "X_test_clean_tda_good_34": X_test_clean_tda_good_34,
+        "X_test_noisy_tda_good_34": X_test_noisy_tda_good_34,
+        "X_test_clean_vector_stitching_good_34": X_test_clean_vector_stitching_good_34,
+        "X_test_noisy_vector_stitching_good_34": X_test_noisy_vector_stitching_good_34
+
 
     """
 
