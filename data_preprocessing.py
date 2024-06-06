@@ -66,31 +66,25 @@ def process(data = (None,None), training_indices=(1,1), testing_indices=(1,1), d
     # clean data
 
     X_train_clean_tda_34 = tda_pipeline_34.fit_transform(X_train)
-    print("1/8")
     X_test_clean_tda_34 = tda_pipeline_34.transform(X_test)
-    print("2/8")
+    print("1/4")
 
     # distorted data
     X_train_noisy_tda_34 = tda_pipeline_34.fit_transform(X_train_noisy_random)
-    print("3/8")
     X_test_noisy_tda_34 = tda_pipeline_34.transform(X_test_noisy_random)
-    print("4/8")
-
+    print("2/4")
 
     # generate TDA features
 
     #clean data
     X_train_clean_vector_stitching_34 = vector_stitching_pipeline_34.fit_transform(X_train)
-    print("5/8")
     X_test_clean_vector_stitching_34 = vector_stitching_pipeline_34.transform(X_test)
-    print("6/8")
+    print("3/4")
 
     # distorted data
     X_train_noisy_vector_stitching_34 = vector_stitching_pipeline_34.fit_transform(X_train_noisy_random)
-    print("7/8")
     X_test_noisy_vector_stitching_34 = vector_stitching_pipeline_34.transform(X_test_noisy_random)
-    print("8/8")
-
+    print("4/4")
 
     # tda
     X_train_clean_tda_good_34 = np.transpose(X_train_clean_tda_34, (0, 3, 2, 1))
