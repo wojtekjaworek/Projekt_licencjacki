@@ -141,6 +141,15 @@ class CombineTDAWithRawImages_34(BaseEstimator, TransformerMixin):
         
         # tda_features shape is: (nr_of_samples, persistance images: 34, resolution resolution: 28, 28)
         #TODO: here is the place to normalize tda_freatures to [0,1] scale
+        
+        
+        # normalize images to [0,1] scale, shape is (nr_of_samples, layers, pixels_x, pixels_y) so we need to normalize every layer in every image
+        for i in range(tda_features.shape[0]):
+            for j in range(tda_features.shape[1]):
+                min_val, max_val = tda_features[i,j].min(), tda_features[i,j].max()
+                tda_features[i,j] = (tda_features[i,j] - min_val) / (max_val - min_val) if max_val - min_val > 0 else tda_features[i,j]
+        
+
 
         raw_images = self.raw_image_pipeline.transform(X).reshape(-1, 28, 28)
         

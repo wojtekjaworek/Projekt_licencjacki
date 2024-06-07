@@ -17,7 +17,7 @@ vector_stitching_pipeline_34, tda_union_34 = VECTOR_STITCHING_PI_Pipeline_34()
 vector_stitching_pipeline_42, tda_union_42 = VECTOR_STITCHING_PI_Pipeline_42()
 
 
-def process_mnist_alike(data = (None,None), training_indices=(1,1), testing_indices=(1,1), dist_ratio=10):
+def process_mnist_alike(data = (None,None), training_indices=(1,1), testing_indices=(1,1), dist_ratio=10, clean=True, distorted=True):
     """
     Full data processing for validation experiment. Works ONLY for 28x28 pixels and one layer images . (MNIST alike)
     
@@ -87,11 +87,12 @@ def process_mnist_alike(data = (None,None), training_indices=(1,1), testing_indi
 
 
     # clean data
-
     X_train_clean_tda_34 = tda_pipeline_34.fit_transform(X_train)
     X_test_clean_tda_34 = tda_pipeline_34.transform(X_test)
     print("1/4")
+    
 
+    
     # distorted data
     X_train_noisy_tda_34 = tda_pipeline_34.fit_transform(X_train_noisy_random)
     X_test_noisy_tda_34 = tda_pipeline_34.transform(X_test_noisy_random)
@@ -166,8 +167,8 @@ def process_mnist_alike(data = (None,None), training_indices=(1,1), testing_indi
         "X_train_noisy_random": X_train_noisy_random_expanded,
         "X_train_clean_tda_good_34": X_train_clean_tda_good_34,    
         "X_train_noisy_tda_good_34": X_train_noisy_tda_good_34,
-        "X_train_clean_vector_stitching_34": X_train_clean_vector_stitching_34,
-        "X_train_noisy_vector_stitching_34": X_train_noisy_vector_stitching_34,
+        "X_train_clean_vector_stitching_good_34": X_train_clean_vector_stitching_good_34,
+        "X_train_noisy_vector_stitching_good_34": X_train_noisy_vector_stitching_good_34,
         "X_test": X_test_expanded, 
         "y_test": y_test,
         "X_test_noisy_random": X_test_noisy_random_expanded,
