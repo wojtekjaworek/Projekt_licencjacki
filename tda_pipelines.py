@@ -151,9 +151,12 @@ class CombineTDAWithRawImages_34(BaseEstimator, TransformerMixin):
         
 
 
-        raw_images = self.raw_image_pipeline.transform(X).reshape(-1, 28, 28)
+        raw_images = self.raw_image_pipeline.transform(X).reshape(-1, 28, 28) # .T to transpose into correct orientation
         
-        #TODO: here to rescale raw_images to [0,1] scale - || -
+        # for img in raw_images transpose img
+        for i in range(raw_images.shape[0]):
+            raw_images[i] = raw_images[i].T
+
 
         raw_images_expanded = np.expand_dims(raw_images, axis=1).repeat(34, axis=1)
 
@@ -218,7 +221,7 @@ def VECTOR_STITCHING_PI_Pipeline_34(dir_list=None, cen_list=None, binarizer_thre
 
     # feature_union 
     feature_union = make_union(
-        PersistenceImage(sigma=.3, n_bins=28, n_jobs=-1) # or heat kernel, or possibly any other (but rational and well-fitting to model) vector representation of the diagram
+        PersistenceImage(sigma=.15, n_bins=28, n_jobs=-1) # or heat kernel, or possibly any other (but rational and well-fitting to model) vector representation of the diagram
     )
 
     tda_union = make_union(
