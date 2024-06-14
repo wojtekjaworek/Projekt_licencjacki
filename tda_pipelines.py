@@ -20,7 +20,15 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
-def TDA_PI34_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.5, bins=28, sig=0.15):
+
+def weight_func(x):
+    """The identity function. Can be any monotonic function that dictates the importance of each persistence point on PD"""
+    return (x+1)**4
+
+
+
+
+def TDA_PI34_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.4, bins=28, sig=0.15):
     """
     Generates persistance images of size 28x28, with 34 (default, if parameters are provided this might be different) channels.
 
@@ -48,7 +56,7 @@ def TDA_PI34_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.5, bin
 
     # feature_union 
     feature_union = make_union(
-        PersistenceImage(sigma=sig, n_bins=bins, n_jobs=-1) # or heat kernel, or possibly any other (but rational and well-fitting to model) vector representation of the diagram
+        PersistenceImage(sigma=sig, n_bins=bins, n_jobs=-1, weight_function=weight_func) # or heat kernel, or possibly any other (but rational and well-fitting to model) vector representation of the diagram
     )
 
     tda_union = make_union(
@@ -221,7 +229,7 @@ def VECTOR_STITCHING_PI_Pipeline_34(dir_list=None, cen_list=None, binarizer_thre
 
     # feature_union 
     feature_union = make_union(
-        PersistenceImage(sigma=.15, n_bins=28, n_jobs=-1) # or heat kernel, or possibly any other (but rational and well-fitting to model) vector representation of the diagram
+        PersistenceImage(sigma=.15, n_bins=28, n_jobs=-1, weight_function=weight_func) # or heat kernel, or possibly any other (but rational and well-fitting to model) vector representation of the diagram
     )
 
     tda_union = make_union(
