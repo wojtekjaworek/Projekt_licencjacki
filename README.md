@@ -4,9 +4,20 @@
 Wojciech Jaworek, Adrian Stolarek
 
 ## Opis projektu
-Integracja pipeline'ów oraz warstw opartych na TDA w konwolucyjnej sieci neuronowej.
+Połączenie preprocessingu danych wejściowych do CNN za pomocą metod topologicznej analizy danych (TDA). 
 
 ## Wymagania
-... wymagania, python, biblioteki, itp.
 
-## coś tam jeszcze...
+- Python 3.10.11
+  
+- Jupyter Notebook (lub jako rozszerzenie VSCode)
+
+
+- numpy 3.2.2
+- matplotlib 3.8.3
+- scikit-learn 1.2.2
+- scikit-image 0.22.0
+- scipy 1.12.0
+- giotto-tda 0.6.0
+- tensorflow 2.15.0
+
