@@ -52,11 +52,8 @@ def process_mnist_alike(data = (None,None), training_indices=(1,1), testing_indi
     train_range = range(training_indices[0], training_indices[1])
     test_range = range(testing_indices[0], testing_indices[1])
 
-    # train_size, test_size = training_size, testing_size # Reshape to (n_samples, n_pixels_x, n_pixels_y) 
-    X = X.reshape((-1, 28, 28)) # important: works only for 28x28 images
+    X = X.reshape((-1, 28, 28))
 
-    # TODO: split datasets according to some crossvalidation hyperparameters
-    # X_train, X_test, y_train, y_test = train_test_split( X, y, train_size=train_size, test_size=test_size, stratify=y, random_state=666 ) 
 
     X_train = X[train_range]
     X_test = X[test_range]
