@@ -1,14 +1,8 @@
-"""
-TDA Pipelines that extract information from provided data in vectorized form.
-Few examples are: 
--- Persistence Images
--- Heat Kernels
--- Amplitudes from various vectorizations
-"""
+
 from sklearn import set_config 
 
 from sklearn.pipeline import make_pipeline, make_union, FeatureUnion, Pipeline
-from gtda.diagrams import PersistenceEntropy, Scaler, PersistenceImage, HeatKernel, Amplitude, BettiCurve, PersistenceLandscape, Silhouette
+from gtda.diagrams import Scaler, PersistenceImage
 
 from gtda.images import HeightFiltration, Binarizer, RadialFiltration
 from gtda.images import DensityFiltration, DilationFiltration, ErosionFiltration, SignedDistanceFiltration
@@ -22,8 +16,11 @@ from sklearn.base import BaseEstimator, TransformerMixin
 
 
 def weight_func(x):
-    """The identity function. Can be any monotonic function that dictates the importance of each persistence point on PD"""
-    return (x+1)**4
+    """
+    The identity function. Can be replaced with any other weight function.
+    See persistence images article for more details.
+    """
+    return x
 
 
 
@@ -41,20 +38,20 @@ def TDA_PI34_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.4, bin
         direction_list = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]] 
         center_list = [ [13, 6], [6, 13], [13, 13], [20, 13], [13, 20], [6, 6], [6, 20], [20, 6], [20, 20], ] 
 
-    # Creating a list of all filtration transformer
+    # list of filtrations
     filtration_list = (
         [ HeightFiltration(direction=np.array(direction), n_jobs=-1) for direction in direction_list ] +
         [ RadialFiltration(center=np.array(center), n_jobs=-1) for center in center_list]
     )
 
-    # Creating the diagram generation pipeline 
+    # PD pipeline 
     diagram_steps = [
         [ Binarizer(threshold=binarizer_threshold, n_jobs=-1), filtration, CubicalPersistence(n_jobs=-1), Scaler(n_jobs=-1), ]
         for filtration in filtration_list
     ]
 
 
-    # feature_union 
+    # dont really need feature union 
     feature_union = make_union(
         PersistenceImage(sigma=sig, n_bins=bins, n_jobs=-1, weight_function=weight_func) # or heat kernel, or possibly any other (but rational and well-fitting to model) vector representation of the diagram
     )
@@ -64,8 +61,6 @@ def TDA_PI34_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.4, bin
         n_jobs=-1
     )
 
-
-    # TODO: transpose to 0 2 3 1 before returning data from pipeline
 
 
     return tda_union
@@ -83,23 +78,23 @@ def TDA_PI42_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.5, bin
         direction_list = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1], [1, -1]]
         center_list = [ [13, 6], [6, 13], [13, 13], [20, 13], [13, 20], [6, 6], [6, 20], [20, 6], [20, 20], ]
 
-    # Creating a list of all filtration transformer
+    # list of filtrations
     filtration_list = (
         [ HeightFiltration(direction=np.array(direction), n_jobs=-1) for direction in direction_list ] +
         [ RadialFiltration(center=np.array(center), n_jobs=-1) for center in center_list] +
         [ DensityFiltration(n_jobs=-1), DilationFiltration(n_jobs=-1), ErosionFiltration(n_jobs=-1), SignedDistanceFiltration(n_jobs=-1) ]
     )
 
-    # Creating the diagram generation pipeline
+    # PD pipeline
     diagram_steps = [
         [ Binarizer(threshold=binarizer_threshold, n_jobs=-1), filtration, CubicalPersistence(n_jobs=-1), Scaler(n_jobs=-1), ]
         for filtration in filtration_list
     ]
 
 
-    # feature_union
+    # feature_union, again
     feature_union = make_union(
-        PersistenceImage(sigma=sig, n_bins=bins, n_jobs=-1) # or heat kernel, or possibly any other (but rational and well-fitting to model) vector representation of the diagram
+        PersistenceImage(sigma=sig, n_bins=bins, n_jobs=-1) 
     )
 
     tda_union = make_union(
@@ -107,8 +102,6 @@ def TDA_PI42_Pipeline(dir_list=None, cen_list=None, binarizer_threshold=0.5, bin
         n_jobs=-1
     )
 
-
-    # TODO: transpose to 0 2 3 1 before returning data from pipeline
 
 
     return tda_union
@@ -146,12 +139,9 @@ class CombineTDAWithRawImages_34(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         tda_features = self.tda_pipeline.fit_transform(X).reshape(-1, 34, 28, 28) # transform method changed to fit_transform in order to initialize binarizer automatically
+                
         
-        # tda_features shape is: (nr_of_samples, persistance images: 34, resolution resolution: 28, 28)
-        #TODO: here is the place to normalize tda_freatures to [0,1] scale
-        
-        
-        # normalize images to [0,1] scale, shape is (nr_of_samples, layers, pixels_x, pixels_y) so we need to normalize every layer in every image
+        # normalize images to [0,1] scale 
         for i in range(tda_features.shape[0]):
             for j in range(tda_features.shape[1]):
                 min_val, max_val = tda_features[i,j].min(), tda_features[i,j].max()
@@ -161,7 +151,6 @@ class CombineTDAWithRawImages_34(BaseEstimator, TransformerMixin):
 
         raw_images = self.raw_image_pipeline.transform(X).reshape(-1, 28, 28) # .T to transpose into correct orientation
         
-        # for img in raw_images transpose img
         for i in range(raw_images.shape[0]):
             raw_images[i] = raw_images[i].T
 
@@ -188,12 +177,8 @@ class CombineTDAWithRawImages_42(BaseEstimator, TransformerMixin):
     def transform(self, X):
         tda_features = self.tda_pipeline.fit_transform(X).reshape(-1, 42, 28, 28)  # transform method changed to fit_transform in order to initialize binarizer automatically
 
-        # tda_features shape is: (nr_of_samples, persistance images: 34, resolution resolution: 28, 28)
-        # TODO: here is the place to normalize tda_freatures to [0,1] scale
-
         raw_images = self.raw_image_pipeline.transform(X).reshape(-1, 28, 28)
 
-        # TODO: here to rescale raw_images to [0,1] scale - || -
 
         raw_images_expanded = np.expand_dims(raw_images, axis=1).repeat(42, axis=1)
 
@@ -202,9 +187,6 @@ class CombineTDAWithRawImages_42(BaseEstimator, TransformerMixin):
         return combined_features
 
 def VECTOR_STITCHING_PI_Pipeline_34(dir_list=None, cen_list=None, binarizer_threshold=0.5, bins=28, sig=0.15):
-    # TODO: fix images normalization: before making one picture both should be normalized to [0,1] scale, to avoid vanishing features
-    # TODO: fix problem with binarizer initialization - probably solved by changing transform method to fit_transform in CombineTDAWithRawImages class
-
     """
     Returns pipeline that extracts topological features in form of persistence images and combines them with raw images.
     """
@@ -215,13 +197,13 @@ def VECTOR_STITCHING_PI_Pipeline_34(dir_list=None, cen_list=None, binarizer_thre
     # Raw data processing - Scaling and normalization
     raw_image_processing = Pipeline([('scaler_and_flattener', ImageScalerAndFlattener())])
 
-    # Creating a list of all filtration transformer
+    # Creating a list of all filtration
     filtration_list = (
         [ HeightFiltration(direction=np.array(direction), n_jobs=-1) for direction in direction_list ] +
         [ RadialFiltration(center=np.array(center), n_jobs=-1) for center in center_list]
     )
 
-    # Creating the diagram generation pipeline 
+    # PD pipeline 
     diagram_steps = [
         [ Binarizer(threshold=0.4, n_jobs=-1), filtration, CubicalPersistence(n_jobs=-1), Scaler(n_jobs=-1), ]
         for filtration in filtration_list
@@ -229,7 +211,7 @@ def VECTOR_STITCHING_PI_Pipeline_34(dir_list=None, cen_list=None, binarizer_thre
 
     # feature_union 
     feature_union = make_union(
-        PersistenceImage(sigma=.15, n_bins=28, n_jobs=-1, weight_function=weight_func) # or heat kernel, or possibly any other (but rational and well-fitting to model) vector representation of the diagram
+        PersistenceImage(sigma=.15, n_bins=28, n_jobs=-1, weight_function=weight_func)
     )
 
     tda_union = make_union(
@@ -244,9 +226,6 @@ def VECTOR_STITCHING_PI_Pipeline_34(dir_list=None, cen_list=None, binarizer_thre
     return final_pipeline, tda_union
 
 def VECTOR_STITCHING_PI_Pipeline_42(dir_list=None, cen_list=None, binarizer_threshold=0.5, bins=28, sig=0.15):
-    # TODO: fix images normalization: before making one picture both should be normalized to [0,1] scale, to avoid vanishing features
-    # TODO: fix problem with binarizer initialization - probably solved by changing transform method to fit_transform in CombineTDAWithRawImages class
-
     """
     Returns pipeline that extracts topological features in form of persistence images and combines them with raw images.
     """
@@ -257,14 +236,14 @@ def VECTOR_STITCHING_PI_Pipeline_42(dir_list=None, cen_list=None, binarizer_thre
     # Raw data processing - Scaling and normalization
     raw_image_processing = Pipeline([('scaler_and_flattener', ImageScalerAndFlattener())])
 
-    # Creating a list of all filtration transformer
+    # Creating a list of all filtration
     filtration_list = (
         [ HeightFiltration(direction=np.array(direction), n_jobs=-1) for direction in direction_list ] +
         [ RadialFiltration(center=np.array(center), n_jobs=-1) for center in center_list] +
         [DensityFiltration(n_jobs=-1), DilationFiltration(n_jobs=-1), ErosionFiltration(n_jobs=-1), SignedDistanceFiltration(n_jobs=-1)]
     )
 
-    # Creating the diagram generation pipeline
+    # PD
     diagram_steps = [
         [ Binarizer(threshold=0.4, n_jobs=-1), filtration, CubicalPersistence(n_jobs=-1), Scaler(n_jobs=-1), ]
         for filtration in filtration_list
@@ -272,7 +251,7 @@ def VECTOR_STITCHING_PI_Pipeline_42(dir_list=None, cen_list=None, binarizer_thre
 
     # feature_union
     feature_union = make_union(
-        PersistenceImage(sigma=.3, n_bins=28, n_jobs=-1) # or heat kernel, or possibly any other (but rational and well-fitting to model) vector representation of the diagram
+        PersistenceImage(sigma=.3, n_bins=28, n_jobs=-1) 
     )
 
     tda_union = make_union(

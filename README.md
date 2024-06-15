@@ -4,7 +4,7 @@
 Wojciech Jaworek, Adrian Stolarek
 
 ## Opis projektu
-Połączenie preprocessingu danych wejściowych do CNN za pomocą metod topologicznej analizy danych (TDA). 
+Połączenie metod topologicznej analizy danych z uczeniem maszynowym w celu klasyfikacji obrazów.
 
 ## Wymagania
 
