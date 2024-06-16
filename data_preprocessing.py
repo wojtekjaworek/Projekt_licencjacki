@@ -1,3 +1,15 @@
+"""
+Tytuł pracy licencjackiej: Połączenie topologicznej analizy danych z konwolucyjnymi sieciami neuronowymi w rozpoznawaniu obrazów.
+
+
+Autorzy: Wojciech Jaworek, Adrian Stolarek
+Data stworzenia: luty - czerwiec 2024
+
+Opis: 
+Plik zawiera funkcję korzystającą z pipeline'ów z pliku tda_pipelines.py, która przetwarza dane z MNIST, które dalej są używane jako dane wejściowe do modeli konwolucyjnych.
+"""
+
+
 from tda_pipelines import *
 
 import numpy as np

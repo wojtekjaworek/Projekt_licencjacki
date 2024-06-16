@@ -1,3 +1,17 @@
+"""
+Tytuł pracy licencjackiej: Połączenie topologicznej analizy danych z konwolucyjnymi sieciami neuronowymi w rozpoznawaniu obrazów.
+
+
+Autorzy: Wojciech Jaworek, Adrian Stolarek
+Data stworzenia: luty - czerwiec 2024
+
+Opis: 
+Plik zawiera modele CNN dla danych surowych.
+"""
+
+
+
+
 from tensorflow.keras import models, layers, losses
 
 class Raw_Model():
