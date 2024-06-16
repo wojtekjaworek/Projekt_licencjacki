@@ -1,3 +1,15 @@
+"""
+Tytuł pracy licencjackiej: Połączenie topologicznej analizy danych z konwolucyjnymi sieciami neuronowymi w rozpoznawaniu obrazów.
+
+
+Autorzy: Wojciech Jaworek, Adrian Stolarek
+Data stworzenia: luty - czerwiec 2024
+
+Opis: 
+Plik zawiera implementacje pipeline'ów do przetwarzania obrazów i generowania obrazów persystencji.
+Zawiera również klasy pomocnicze do łączenia obrazów persystencji z obrazami surowymi (vector-stitching).
+"""
+
 
 from sklearn import set_config 
 
